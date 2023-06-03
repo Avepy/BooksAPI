@@ -21,14 +21,14 @@ public class BooksController : Controller
     [HttpGet]
     public async Task<IActionResult> GetBooks()
     {
-        return Ok(await _dbContext.Books.ToListAsync());
+        return Ok(await _dbContext.Books.AsNoTracking().ToListAsync());
     }
 
     [HttpGet]
     [Route("{id:guid}")]
     public async Task<IActionResult> GetBook([FromRoute] Guid id)
     {
-        var book = await _dbContext.Books.FindAsync(id);
+        var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
 
         if (book == null)
         {
@@ -69,7 +69,7 @@ public class BooksController : Controller
             return BadRequest(ModelState);
         }
         
-        var book = await _dbContext.Books.FindAsync(id);
+        var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
 
         if (book == null) return NotFound();
 
@@ -94,7 +94,7 @@ public class BooksController : Controller
     [Route("{id:guid}")]
     public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
     {
-        var book = await _dbContext.Books.FindAsync(id);
+        var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
 
         if (book == null) return NotFound();
         
