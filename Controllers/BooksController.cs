@@ -24,11 +24,10 @@ public class BooksController : Controller
         return Ok(await _dbContext.Books.AsNoTracking().ToListAsync());
     }
 
-    [HttpGet]
-    [Route("{id:guid}")]
+    [HttpGet ("{id:guid}")]
     public async Task<IActionResult> GetBook([FromRoute] Guid id)
     {
-        var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
+        var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
 
         if (book == null)
         {
@@ -60,38 +59,28 @@ public class BooksController : Controller
         return Ok(book);
     }
 
-    [HttpPatch] 
-    [Route("{id:guid}")]
-    public async Task<IActionResult> UpdateBook([FromRoute] Guid id, JsonPatchDocument<UpdateBookRequest> updateBookRequest)
+    [HttpPatch]
+    public async Task<IActionResult> UpdateBook([FromBody] UpdateBookRequest updateBookRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
-        var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
+        var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == updateBookRequest.Id);
 
         if (book == null) return NotFound();
-
-        var updateBook = new UpdateBookRequest
-        {
-            Title = book.Title,
-            Description = book.Description,
-            Author = book.Author
-        };
-        updateBookRequest.ApplyTo(updateBook);
-
-        book.Title = updateBook.Title;
-        book.Description = updateBook.Description;
-        book.Author = updateBook.Author;
+        
+        book.Title = updateBookRequest.Title;
+        book.Description = updateBookRequest.Description;
+        book.Author = updateBookRequest.Author;
 
         await _dbContext.SaveChangesAsync();
         
         return Ok(book);
     }
 
-    [HttpDelete]
-    [Route("{id:guid}")]
+    [HttpDelete ("{id:guid}")]
     public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
     {
         var book = await _dbContext.Books.SingleOrDefaultAsync(b => b.Id == id);
