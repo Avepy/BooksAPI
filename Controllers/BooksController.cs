@@ -20,7 +20,7 @@ public class BooksController : Controller
     [HttpGet]
     public async Task<IActionResult> GetBooks()
     {
-        return Ok(await _dbContext.Books.AsNoTracking().ToListAsync());
+        return Ok(await _dbContext.Books.AsNoTracking().Include(b => b.AuthorNavigation).ToListAsync());
     }
     
     [HttpGet ("Authors")]
@@ -111,7 +111,8 @@ public class BooksController : Controller
             Id = Guid.NewGuid(),
             Title = addBookRequest.Title,
             Description = addBookRequest.Description,
-            AuthorNavigation = author
+            AuthorNavigation = author,
+            AuthorId = author.Id
         };
 
         await _dbContext.Books.AddAsync(book);

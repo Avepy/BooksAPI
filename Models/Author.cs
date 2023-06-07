@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace BooksAPI.Models;
 
 public class Author
