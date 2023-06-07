@@ -26,7 +26,7 @@ public class BooksController : Controller
     [HttpGet ("Authors")]
     public async Task<IActionResult> GetAuthors()
     {
-        return Ok(await _dbContext.Authors.AsNoTracking().ToListAsync());
+        return Ok(await _dbContext.Authors.AsNoTracking().Include(a => a.Books).ToListAsync());
     }
 
     [HttpGet ("{id:guid}")]
@@ -91,14 +91,16 @@ public class BooksController : Controller
             return BadRequest(ModelState);
         }
         
-        if (addBookRequest.Author.Split(" ").Length != 2)
+        var separatedAuthor = addBookRequest.Author.Split(" ");
+        
+        if (separatedAuthor.Length < 2)
         {
             return BadRequest("Please provide the author's name and surname");
         }
         
-        var authorName = addBookRequest.Author.Split(" ")[0];
-        var authorSurname = addBookRequest.Author.Split(" ")[1];
-        
+        var authorName = separatedAuthor[0];
+        var authorSurname = string.Join(" ", separatedAuthor.Skip(1));
+
         var author = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Name == authorName && a.Surname == authorSurname);
         
         if (author == null)
@@ -111,8 +113,7 @@ public class BooksController : Controller
             Id = Guid.NewGuid(),
             Title = addBookRequest.Title,
             Description = addBookRequest.Description,
-            AuthorNavigation = author,
-            AuthorId = author.Id
+            AuthorNavigation = author
         };
 
         await _dbContext.Books.AddAsync(book);
