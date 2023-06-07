@@ -113,7 +113,7 @@ public class BooksController : Controller
             Id = Guid.NewGuid(),
             Title = addBookRequest.Title,
             Description = addBookRequest.Description,
-            AuthorNavigation = author
+            AuthorId = author.Id
         };
 
         await _dbContext.Books.AddAsync(book);

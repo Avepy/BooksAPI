@@ -8,8 +8,8 @@ public class AuthorEntityConfiguration : IEntityTypeConfiguration<Author>
 {
     public void Configure(EntityTypeBuilder<Author> builder)
     {
-        builder.HasMany<Book>()
-            .WithOne(x => x.AuthorNavigation)
-            .HasForeignKey(x => x.AuthorId);
+        builder.HasMany(a => a.Books)
+            .WithOne(b => b.AuthorNavigation)
+            .HasForeignKey(b => b.AuthorId);
     }
 }
