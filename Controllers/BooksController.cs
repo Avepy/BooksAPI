@@ -1,5 +1,7 @@
 using BooksAPI.Data;
+using BooksAPI.Identity;
 using BooksAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,6 +57,7 @@ public class BooksController : Controller
         return Ok(author);
     }
     
+    [Authorize]
     [HttpPost ("Authors")]
     public async Task<IActionResult> AddAuthor(AddAuthorRequest addAuthorRequest)
     {
@@ -83,6 +86,7 @@ public class BooksController : Controller
         return Created("", author);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddBook(AddBookRequest addBookRequest)
     {
@@ -122,6 +126,7 @@ public class BooksController : Controller
         return Created("", book);
     }
 
+    [Authorize]
     [HttpPatch]
     public async Task<IActionResult> UpdateBook([FromBody] UpdateBookRequest updateBookRequest)
     {
@@ -153,6 +158,8 @@ public class BooksController : Controller
         return Ok(book);
     }
 
+    [Authorize]
+    [RequiresClaim(IdentityData.AdminUserClaimName, "true")]
     [HttpDelete ("{id:guid}")]
     public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
     {
@@ -166,6 +173,8 @@ public class BooksController : Controller
         return Ok(book);
     }
     
+    [Authorize]
+    [RequiresClaim(IdentityData.AdminUserClaimName, "true")]
     [HttpDelete ("Authors/{id:guid}")]
     public async Task<IActionResult> DeleteAuthor([FromRoute] Guid id)
     {
