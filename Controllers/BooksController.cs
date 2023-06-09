@@ -25,7 +25,7 @@ public class BooksController : Controller
         return Ok(await _dbContext.Books.AsNoTracking().Include(b => b.AuthorNavigation).ToListAsync());
     }
     
-    [HttpGet ("Authors")]
+    [HttpGet ("authors")]
     public async Task<IActionResult> GetAuthors()
     {
         return Ok(await _dbContext.Authors.AsNoTracking().Include(a => a.Books).ToListAsync());
@@ -44,7 +44,7 @@ public class BooksController : Controller
         return Ok(book);
     }
     
-    [HttpGet ("Authors/{id:guid}")]
+    [HttpGet ("authors/{id:guid}")]
     public async Task<IActionResult> GetAuthor([FromRoute] Guid id)
     {
         var author = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
@@ -58,7 +58,7 @@ public class BooksController : Controller
     }
     
     [Authorize]
-    [HttpPost ("Authors")]
+    [HttpPost ("authors")]
     public async Task<IActionResult> AddAuthor(AddAuthorRequest addAuthorRequest)
     {
         if (!ModelState.IsValid)
@@ -175,7 +175,7 @@ public class BooksController : Controller
     
     [Authorize]
     [RequiresClaim(IdentityData.AdminUserClaimName, "true")]
-    [HttpDelete ("Authors/{id:guid}")]
+    [HttpDelete ("authors/{id:guid}")]
     public async Task<IActionResult> DeleteAuthor([FromRoute] Guid id)
     {
         var author = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
