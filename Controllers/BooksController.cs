@@ -38,7 +38,7 @@ public class BooksController : Controller
 
         if (book == null)
         {
-            return NotFound();
+            return NotFound("Book does not exist");
         }
 
         return Ok(book);
@@ -51,7 +51,7 @@ public class BooksController : Controller
 
         if (author == null)
         {
-            return NotFound();
+            return NotFound("Author does not exist");
         }
 
         return Ok(author);
@@ -137,7 +137,7 @@ public class BooksController : Controller
         
         var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == updateBookRequest.Id);
 
-        if (book == null) return NotFound();
+        if (book == null) return NotFound("Book does not exist");
         
         var authorName = updateBookRequest.Author.Split(" ")[0];
         var authorSurname = updateBookRequest.Author.Split(" ")[1];
@@ -165,7 +165,7 @@ public class BooksController : Controller
     {
         var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
 
-        if (book == null) return NotFound();
+        if (book == null) return NotFound("Book does not exist");
         
         _dbContext.Remove(book);
         await _dbContext.SaveChangesAsync();
@@ -180,7 +180,7 @@ public class BooksController : Controller
     {
         var author = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
 
-        if (author == null) return NotFound();
+        if (author == null) return NotFound("Author does not exist");
         
         _dbContext.Remove(author);
         await _dbContext.SaveChangesAsync();
