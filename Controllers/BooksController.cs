@@ -70,7 +70,7 @@ public class BooksController : Controller
         
         if (authorExists)
         {
-            return Conflict();
+            return Conflict("Author already exists");
         }
 
         var author = new Author()
@@ -99,7 +99,7 @@ public class BooksController : Controller
         
         if (separatedAuthor.Length < 2)
         {
-            return BadRequest("Please provide the author's name and surname");
+            return BadRequest("Please provide both the author's name and surname");
         }
         
         var authorName = separatedAuthor[0];
@@ -109,7 +109,7 @@ public class BooksController : Controller
         
         if (author == null)
         {
-            return BadRequest("Please add the author first");
+            return BadRequest("The specified author does not exist");
         }
 
         var book = new Book()
